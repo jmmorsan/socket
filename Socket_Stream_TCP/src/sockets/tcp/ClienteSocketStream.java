@@ -1,40 +1,33 @@
 package sockets.tcp;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class ClienteSocketStream {
-
     public static void main(String[] args) {
-        try {
-            System.out.println("Creando socket cliente");
-
-            Socket clientSocket = new Socket();
-
-            System.out.println("Estableciendo la conexión");
-
-            InetSocketAddress addr = new InetSocketAddress("localhost", 5555);
+        try (Socket clientSocket = new Socket()) {
+            // Tarea 1.2: IP real de la VM (NO localhost)
+            String ipVM = "192.168.165.6"; // Mi IP de la MV
+            int puerto = 5555;
+            
+            System.out.println("[DEBUG] Cliente: destino=" + ipVM + ":" + puerto);
+            
+            InetSocketAddress addr = new InetSocketAddress(ipVM, puerto);
             clientSocket.connect(addr);
 
-            InputStream is = clientSocket.getInputStream();
             OutputStream os = clientSocket.getOutputStream();
-
-            System.out.println("Enviando mensaje");
-
-            String mensaje = "mensaje desde el cliente";
+            String mensaje = "Hola desde el host";
+            
             os.write(mensaje.getBytes());
-
-            System.out.println("Mensaje enviado");
-
-            System.out.println("Cerrando el socket cliente");
-            clientSocket.close();
-
-            System.out.println("Terminado");
+            // Uso de flush() según la tabla para asegurar el envío
+            os.flush(); 
+            
+            System.out.println("Mensaje enviado con éxito");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error en el cliente: " + e.getMessage());
         }
     }
 }
