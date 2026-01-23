@@ -11,12 +11,10 @@ import java.rmi.UnknownHostException;
  * Hello world!
  *
  */
-public class AppCliente 
-{
+public class AppCliente {
 	static final int  PORT = 7777;
 	
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) {
     	
         try {
         	//conectamos con el servidor
@@ -34,6 +32,8 @@ public class AppCliente
         	//Leemos de consola y enviamos al server
         	String texto = entradaConsola.readLine();
         	
+        	while((texto = entradaConsola.readLine()) != null) {
+        	
         	
         		//Mejora 1: Validar que el dato introducido es un número
         		try {
@@ -45,12 +45,20 @@ public class AppCliente
         		
         			//Leemos respuesta del servidor
         			String respuesta = entradaSocket.readLine();
-        			System.out.println(respuesta);
+        			
+					if (respuesta != null) {
+						System.out.println(respuesta);
+						//Insertar otro número
+						System.out.println("<Cliente>Inserte otro número: ");
+					}else {
+
+						break;
+					}
         		
         			}catch(NumberFormatException ex) {
         				System.out.println("<Cliente>Debe insertar un número válido");
-        			}
-        	
+        			}        		
+        	}
         	String datoRec;
         	while((datoRec = entradaSocket.readLine()) != null){
         		//Mostrar el dato recibido por consola
