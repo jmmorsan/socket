@@ -30,7 +30,7 @@ public class AppCliente {
         	
         	System.out.println("<Cliente>Inserte un número: ");
         	//Leemos de consola y enviamos al server
-        	String texto = entradaConsola.readLine();
+        	String texto;
         	
         	while((texto = entradaConsola.readLine()) != null) {
         	
@@ -51,22 +51,18 @@ public class AppCliente {
 						//Insertar otro número
 						System.out.println("<Cliente>Inserte otro número: ");
 					}else {
-
 						break;
 					}
         		
-        			}catch(NumberFormatException ex) {
-        				System.out.println("<Cliente>Debe insertar un número válido");
-        			}        		
-        	}
-        	String datoRec;
-        	while((datoRec = entradaSocket.readLine()) != null){
-        		//Mostrar el dato recibido por consola
-        		System.out.println(datoRec);
-        		// Leer la consola y enviar al server
-        		salida.println(entradaConsola.readLine());
+        		} catch(NumberFormatException ex) {
+        			System.out.println("<Cliente>Debe insertar un número válido");
+
+                    System.out.println("<Cliente>Inserte un número: "); 
+        		}        		
         	}
         	
+        //Cerramos flujos y socket
+        socket.close();
         	
         }catch(UnknownHostException ex) {
         	
