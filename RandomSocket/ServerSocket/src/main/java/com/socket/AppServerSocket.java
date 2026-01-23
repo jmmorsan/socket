@@ -17,6 +17,7 @@ public class AppServerSocket
 {
 	private final static int PORT = 7777;
 	private static int numGen;
+	private static int vidas = 5;
     public static void main( String[] args )
     {
     	//Generar número
@@ -64,9 +65,24 @@ public class AppServerSocket
 		
 			System.out.println("IP:" + clientIP + ", HostName: "+ hostName);
 	}
+	
+	//Mejora 2: Método para comprobar el número y añadimos mecanica de vidas
+	
 	private static String checkNumero(String datoRec) {
 		try {
 			int numero = Integer.parseInt(datoRec);
+			
+			// LÓGICA DE VIDAS
+	        if (numero == numGen) {
+	            return "🎉 ¡CORRECTO! Has ganado.";
+	        } 
+	        
+	        // Si no acierta, restamos vida
+	        vidas--;
+	        
+	        if (vidas <= 0) {
+	            return "💀 GAME OVER. El número era: " + numGen;
+	        }
 			
 			if(numero > numGen) {
 				return "<server>El número es mayor que el número mágico";
