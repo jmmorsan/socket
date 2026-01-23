@@ -74,14 +74,25 @@ public class AppServerSocket
 			
 			// LÓGICA DE VIDAS
 	        if (numero == numGen) {
+	        	
+	        	//Reinicio de vidas y número
+	        	vidas = 5; 
+	            numGen = (new Random()).nextInt(10) + 1;
 	            return "🎉 ¡CORRECTO! Has ganado.";
 	        } 
 	        
 	        // Si no acierta, restamos vida
 	        vidas--;
 	        
+	        System.out.println("❌ Incorrecto. Te quedan " + vidas + " vidas.");
+	        
 	        if (vidas <= 0) {
-	            return "💀 GAME OVER. El número era: " + numGen;
+	        	
+	        	String numeroEra = String.valueOf(numGen); // Guardamos el número para mostrarlo
+	        	vidas = 5; // Reseteamos vidas
+	            numGen = (new Random()).nextInt(10) + 1; // Generamos NUEVO número
+	            
+	            return "💀 GAME OVER. Te quedaste sin vidas. El número era: " + numeroEra + ". ¡Juego reiniciado!";
 	        }
 			
 			if(numero > numGen) {
