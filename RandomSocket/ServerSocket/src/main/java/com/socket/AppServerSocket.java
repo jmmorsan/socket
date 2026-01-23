@@ -17,7 +17,7 @@ public class AppServerSocket
 {
 	private final static int PORT = 7777;
 	private static int numGen;
-    public static void main( String[] args ) 
+    public static void main( String[] args )
     {
     	//Generar número
     	numGen = (new Random()).nextInt(10)+1;
