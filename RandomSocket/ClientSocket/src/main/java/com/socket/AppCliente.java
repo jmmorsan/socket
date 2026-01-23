@@ -32,7 +32,24 @@ public class AppCliente
         	
         	System.out.println("<Cliente>Inserte un número: ");
         	//Leemos de consola y enviamos al server
-        	salida.println(entradaConsola.readLine());
+        	String texto = entradaConsola.readLine();
+        	
+        	
+        		//Mejora 1: Validar que el dato introducido es un número
+        		try {
+        			//Intentamos convertir a número      		
+        			Integer.parseInt(texto);
+        		
+        			//Si es correcto enviamos al server
+        			salida.println(texto);
+        		
+        			//Leemos respuesta del servidor
+        			String respuesta = entradaSocket.readLine();
+        			System.out.println(respuesta);
+        		
+        			}catch(NumberFormatException ex) {
+        				System.out.println("<Cliente>Debe insertar un número válido");
+        			}
         	
         	String datoRec;
         	while((datoRec = entradaSocket.readLine()) != null){
