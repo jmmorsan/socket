@@ -33,6 +33,13 @@ public class AppCliente {
         	String texto;
         	
         	while((texto = entradaConsola.readLine()) != null) {
+        		
+        		// --- MEJORA 3: OPCIÓN DE SALIR ---
+        		if (texto.equalsIgnoreCase("SALIR")) {
+        			salida.println("SALIR"); // Avisamos al servidor
+        			System.out.println("Has abandonado la partida.");
+        			break; // Rompemos el bucle para cerrar
+        		}
         	
         	
         		//Mejora 1: Validar que el dato introducido es un número
