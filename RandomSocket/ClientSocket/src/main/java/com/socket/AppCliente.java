@@ -29,12 +29,13 @@ public class AppCliente {
         	BufferedReader entradaConsola = new BufferedReader(new InputStreamReader(System.in));
         	
         	System.out.println("<Cliente>Inserte un número: ");
+        	System.out.println("<Cliente>Si quiere terminar el juego escriba SALIR: ");
         	//Leemos de consola y enviamos al server
         	String texto;
         	
         	while((texto = entradaConsola.readLine()) != null) {
         		
-        		// --- MEJORA 3: OPCIÓN DE SALIR ---
+        		//Mejora 3: Permitir salir del juego
         		if (texto.equalsIgnoreCase("SALIR")) {
         			salida.println("SALIR"); // Avisamos al servidor
         			System.out.println("Has abandonado la partida.");

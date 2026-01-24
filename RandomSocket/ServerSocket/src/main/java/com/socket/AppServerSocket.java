@@ -43,6 +43,12 @@ public class AppServerSocket
     		//leeremos todos los mensajes recibidos
     		//comprobamos si es el número mágico
     		while((datoRec = entrada.readLine())!= null) {
+    			
+    			//Mejora 3: Permitir salir del juego
+    			if (datoRec.equalsIgnoreCase("SALIR")) {
+    				System.out.println("El cliente ha cerrado la conexión.");
+    				break;
+    			}
   
     			datoEnv = checkNumero(datoRec);
     			
@@ -84,7 +90,7 @@ public class AppServerSocket
 	        // Si no acierta, restamos vida
 	        vidas--;
 	        
-	        System.out.println("❌ Incorrecto. Te quedan " + vidas + " vidas.");
+	        System.out.println("Cliente falló. Vidas restantes: " + vidas);
 	        
 	        if (vidas <= 0) {
 	        	
@@ -96,9 +102,9 @@ public class AppServerSocket
 	        }
 			
 			if(numero > numGen) {
-				return "<server>El número es mayor que el número mágico";
+				return "<server>El número es mayor que el número mágico (Te quedan " + vidas + " vidas)";
 			}else if(numero < numGen) {
-				return "<server>El número es menor que el número mágico";
+				return "<server>El número es menor que el número mágico (Te quedan " + vidas + " vidas)";
 			}else {
 				return "<server>Ha adivinado el número";
 			}
