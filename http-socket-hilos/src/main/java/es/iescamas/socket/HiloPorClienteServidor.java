@@ -79,12 +79,15 @@ public class HiloPorClienteServidor implements Runnable {
             if (requestLine == null || requestLine.isBlank()) return;
 
             String path = "/";
-            if (requestLine.startsWith("GET ")) {
-                int start = 4;
-                int end = requestLine.indexOf(' ', start);
-                if (end > start) 
-                	path = requestLine.substring(start, end);
+            // Parseo básico de la ruta
+            int start = requestLine.indexOf(' ');
+            int end = requestLine.indexOf(' ', start + 1);
+            if (start != -1 && end != -1) {
+                path = requestLine.substring(start + 1, end);
             }
+            
+            // Log en consola (Importante para la evidencia de hilos)
+            System.out.println("[" + Thread.currentThread().getName() + "] Petición: " + path);
 
             // 2) Favicon: servir el fichero real desde resources y salir
             if ("/favicon.ico".equals(path)) {
