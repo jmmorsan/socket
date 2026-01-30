@@ -12,8 +12,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Servidor TCP que atiende clientes mediante un hilo por conexión.
- * Sirve HTML básico y un favicon desde src/main/resources/favicon.ico
+ * Servidor TCP concurrente que atiende a múltiples clientes mediante hilos.
+ * <p>
+ * Implementa rutas dinámicas (/nombre), página de inicio y gestión de errores 404.
+ * </p>
+ *
+ * @author Juanma
+ * @version 1.0
+ * @since 2026-01
  */
 public class HiloPorClienteServidor implements Runnable {
 
@@ -28,7 +34,13 @@ public class HiloPorClienteServidor implements Runnable {
 
     /** Referencia al hilo que ejecuta run(). */
     protected Thread runningThread = null;
-
+    
+    /**
+     * Constructor del servidor.
+     *
+     * @param serverPort Puerto TCP en el que escuchará el servidor.
+     */
+    
     public HiloPorClienteServidor(int serverPort) {
         this.serverPort = serverPort;
     }
@@ -66,7 +78,17 @@ public class HiloPorClienteServidor implements Runnable {
     }
 
     /**
-     * Procesa la conexión de un cliente.
+     * Procesa la solicitud HTTP de un cliente individual.
+     * Analiza la ruta solicitada y sirve el contenido correspondiente.
+     *
+     * @param clientSocket El socket conectado al cliente.
+     * @throws IOException Si ocurre un error de lectura/escritura en el socket.
+     * @apiNote Ejemplos de rutas admitidas:
+     * <pre>
+     * http://localhost:9001/nombre/Ana   -> Devuelve saludo
+     * http://localhost:9001/             -> Página de inicio
+     * http://localhost:9001/noexiste     -> Error 404
+     * </pre>
      */
     private void processClientRequest(Socket clientSocket) throws IOException {
         try (clientSocket;
@@ -127,10 +149,12 @@ public class HiloPorClienteServidor implements Runnable {
                         "<ul style='list-style-type: none; padding: 0;'>" +
                         
                         // Enlace a la Mejora 1
-                        "<li><a href='/nombre/Juanma' style='display:inline-block; margin:10px; padding:10px 20px; background:#4caf50; color:white; text-decoration:none; border-radius:5px;'>👉 Probar Saludo (Mejora 1)</a></li>" +
+                        "<li><a href='/nombre/Juanma' style='display:inline-block; margin:10px; padding:10px 20px; background:#4caf50; color:white; "
+                        + "text-decoration:none; border-radius:5px;'>👉 Probar Saludo (Mejora 1)</a></li>" +
                         
                         // Enlace a la Mejora 2 (Forzamos un error)
-                        "<li><a href='/ruta-inventada' style='display:inline-block; margin:10px; padding:10px 20px; background:#f44336; color:white; text-decoration:none; border-radius:5px;'>👉 Probar Error 404 (Mejora 2)</a></li>" +
+                        "<li><a href='/ruta-inventada' style='display:inline-block; margin:10px; padding:10px 20px; background:#f44336; color:white; "
+                        + "text-decoration:none; border-radius:5px;'>👉 Probar Error 404 (Mejora 2)</a></li>" +
                         "</ul>" +
                         
                         "<hr><p><small>Atendido por: " + Thread.currentThread().getName() + "</small></p>" +
@@ -248,6 +272,11 @@ public class HiloPorClienteServidor implements Runnable {
             out.flush();
         }
     }
+    
+    /**
+     * Verifica si el servidor está detenido.
+     * @return true si el servidor ha recibido la orden de parada, false en caso contrario.
+     */
 
     private synchronized boolean isStopped() {
         return isStopped;
