@@ -117,7 +117,38 @@ public class HiloPorClienteServidor implements Runnable {
                 return;
             }
             
-            //Mejora 2:Gestión del 404
+            //Mejora 3: Página de Inicio / Root
+            
+            if (path.equals("/")) {
+                String homePage = "<html><head><title>Inicio - Servidor Java</title></head>" +
+                        "<body style='font-family: sans-serif; text-align: center; padding: 40px; background-color: #f0f4c3;'>" +
+                        "<h1 style='color: #33691e;'>🏠 Bienvenido a mi Servidor Concurrente</h1>" +
+                        "<p>Selecciona qué quieres probar:</p>" +
+                        "<ul style='list-style-type: none; padding: 0;'>" +
+                        
+                        // Enlace a la Mejora 1
+                        "<li><a href='/nombre/Juanma' style='display:inline-block; margin:10px; padding:10px 20px; background:#4caf50; color:white; text-decoration:none; border-radius:5px;'>👉 Probar Saludo (Mejora 1)</a></li>" +
+                        
+                        // Enlace a la Mejora 2 (Forzamos un error)
+                        "<li><a href='/ruta-inventada' style='display:inline-block; margin:10px; padding:10px 20px; background:#f44336; color:white; text-decoration:none; border-radius:5px;'>👉 Probar Error 404 (Mejora 2)</a></li>" +
+                        "</ul>" +
+                        
+                        "<hr><p><small>Atendido por: " + Thread.currentThread().getName() + "</small></p>" +
+                        "</body></html>";
+
+                byte[] homeBytes = homePage.getBytes(StandardCharsets.UTF_8);
+                String homeHeaders = "HTTP/1.1 200 OK\r\n" +
+                                     "Content-Type: text/html; charset=UTF-8\r\n" +
+                                     "Content-Length: " + homeBytes.length + "\r\n" +
+                                     "Connection: close\r\n\r\n";
+
+                out.write(homeHeaders.getBytes(StandardCharsets.US_ASCII));
+                out.write(homeBytes);
+                out.flush();
+                return; // Importante salir para que no salte el 404
+            }
+            
+            //Mejora 2: Gestión del 404
             
             // Si el código llega aquí, es que la ruta no era ni /nombre/ ni /favicon.ico
             // Por tanto, es una ruta desconocida.
