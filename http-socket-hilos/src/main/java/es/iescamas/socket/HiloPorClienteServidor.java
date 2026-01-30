@@ -88,12 +88,64 @@ public class HiloPorClienteServidor implements Runnable {
             
             // Log en consola (Importante para la evidencia de hilos)
             System.out.println("[" + Thread.currentThread().getName() + "] Petición: " + path);
+            
+            
+            //Mejora 1: Ruta dinámica /nombre/<nombre>
+            if (path.startsWith("/nombre/")) {
+                String nombre = path.substring(8); // Quita "/nombre/" para quedarse con el resto
+                
+                String responseBody = "<html><body style='font-family:sans-serif; text-align:center; background-color:#e3f2fd;'>" +
+                        "<h1 style='color:#1565c0;'>Hola " + nombre + "</h1>" +
+                        "<p>Atendido por el hilo: <b>" + Thread.currentThread().getName() + "</b></p>" +
+                        "</body></html>";
+
+                byte[] bytes = responseBody.getBytes(StandardCharsets.UTF_8);
+                String headers = "HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: text/html; charset=UTF-8\r\n" +
+                        "Content-Length: " + bytes.length + "\r\n" +
+                        "\r\n";
+                
+                out.write(headers.getBytes(StandardCharsets.US_ASCII));
+                out.write(bytes);
+                out.flush();
+                return; // Importante: salir para no enviar la pagina por defecto de abajo
+            }
 
             // 2) Favicon: servir el fichero real desde resources y salir
             if ("/favicon.ico".equals(path)) {
                 serveFavicon(out);
                 return;
             }
+            
+            //Mejora 2:Gestión del 404
+            
+            // Si el código llega aquí, es que la ruta no era ni /nombre/ ni /favicon.ico
+            // Por tanto, es una ruta desconocida.
+            
+            String page404 = "<html><head><title>Error 404</title></head>" +
+                             "<body style='background-color: #ffcccc; font-family: sans-serif; text-align: center;'>" +
+                             "<h1 style='color: red;'>⛔ ERROR 404</h1>" +
+                             "<h2>Página no encontrada</h2>" +
+                             "<p>Lo sentimos, la ruta <b>" + path + "</b> no existe en este servidor.</p>" +
+                             "<p>Intenta probar con: <i>/nombre/TuNombre</i></p>" +
+                             "<p><small>Hilo: " + Thread.currentThread().getName() + "</small></p>" +
+                             "</body></html>";
+
+            byte[] bytes404 = page404.getBytes(StandardCharsets.UTF_8);
+
+            // Fíjate en la primera línea: HTTP/1.1 404 Not Found (Ya no es 200 OK)
+            String headers404 = "HTTP/1.1 404 Not Found\r\n" +
+                                "Content-Type: text/html; charset=UTF-8\r\n" +
+                                "Content-Length: " + bytes404.length + "\r\n" +
+                                "Connection: close\r\n" +
+                                "\r\n";
+
+            out.write(headers404.getBytes(StandardCharsets.US_ASCII));
+            out.write(bytes404);
+            out.flush();
+            
+            // Log en consola para que veas el error
+            System.out.println("[" + Thread.currentThread().getName() + "] ⚠️ 404 Not Found: " + path);
 
             // 3) Datos del cliente
             String clientIp = clientSocket.getInetAddress().getHostAddress();
